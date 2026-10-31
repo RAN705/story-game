@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>十年荒謬與驚奇故事集 — 過年限定聚會遊戲</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        festive: {
+                            gold: '#FACE63',
+                            red: '#E63946',
+                            dark: '#0F172A',
+                            card: '#1E293B',
+                            accent: '#FFB703'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'sans-serif'],
+                        heading: ['ZCOOL XiaoWei', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F19;
+            color: #F8FAFC;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(246, 190, 80, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(230, 57, 70, 0.08) 0%, transparent 45%);
+            min-height: 100vh;
+        }
+
+        /* Glassmorphic effect */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(250, 206, 99, 0.15);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(250, 206, 99, 0.5);
+            box-shadow: 0 10px 30px -10px rgba(250, 206, 99, 0.3);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0F172A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FACE63;
+        }
+
+        /* Modal animation */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.95) translateY(20px);
+        }
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            transition: opacity 300ms ease-out, transform 300ms ease-out;
+        }
+        .modal-exit {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .modal-exit-active {
+            opacity: 0;
+            transform: scale(0.95) translateY(20px);
+            transition: opacity 200ms ease-in, transform 200ms ease-in;
+        }
+
+        /* Pulsing gold glow */
+        @keyframes goldGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(250, 206, 99, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(250, 206, 99, 0.5); }
+        }
+        .glow-effect {
+            animation: goldGlow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen justify-between relative overflow-x-hidden">
+
+    <!-- Header Section -->
+    <header class="w-full py-8 px-4 text-center relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <div class="inline-block bg-festive-red/20 text-festive-gold border border-festive-gold/30 px-4 py-1.5 rounded-full text-xs md:text-sm tracking-widest font-bold mb-4 uppercase">
+                🧧 新春特別企劃 ‧ 朋友限定揭秘
+            </div>
+            <h1 class="text-3xl md:text-5xl font-extrabold font-heading text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-festive-gold to-red-400 mb-3 tracking-wide">
+                十年荒繆與驚奇故事集
+            </h1>
+            <p class="text-slate-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+                畢業十年，我們都在社會裡滾過幾圈。究竟誰遇到了恐怖情人、誰在職場流下時代的眼淚？<br class="hidden sm:block">
+                <span class="text-festive-gold font-semibold">點擊翻開故事卡片</span>，今夜一起爆笑解鎖！
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Grid Section -->
+    <main class="max-w-6xl mx-auto px-4 py-6 w-full flex-grow relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="story-grid">
+            <!-- Dynamic Story Cards will be inserted here by JavaScript -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full py-6 text-center text-slate-500 text-xs border-t border-slate-800/80 mt-12">
+        <p>🎉 2026 過年聚會歡樂限定 ‧ 故事純屬真實經驗，如有雷同代表你也過得蠻精彩的</p>
+    </footer>
+
+    <!-- Story Detail Modal -->
+    <div id="story-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden bg-black/80 backdrop-blur-md overflow-y-auto">
+        <div id="modal-container" class="glass-card bg-slate-900/90 w-full max-w-3xl rounded-2xl overflow-hidden border border-festive-gold/30 shadow-2xl my-8 transform transition-all">
+            
+            <!-- Modal Header -->
+            <div class="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-6 border-b border-slate-700/60">
+                <button onclick="closeModal()" class="absolute top-5 right-5 text-slate-400 hover:text-festive-gold w-9 h-9 rounded-full bg-slate-800/80 flex items-center justify-center transition-all hover:rotate-90">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+                <div class="flex items-center space-x-3 mb-2">
+                    <span id="modal-tag" class="px-3 py-1 text-xs font-bold rounded-full bg-festive-gold/20 text-festive-gold border border-festive-gold/30">
+                        <!-- Tag -->
+                    </span>
+                    <span id="modal-time" class="text-xs text-slate-400 flex items-center gap-1">
+                        <i class="fa-regular fa-clock"></i> 約發生於畢業第 <span id="modal-year">3</span> 年
+                    </span>
+                </div>
+                <h2 id="modal-title" class="text-2xl md:text-3xl font-bold font-heading text-white">
+                    <!-- Title -->
+                </h2>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+                
+                <!-- Canvas Banner (Dynamically Generated Graphic) -->
+                <div class="w-full rounded-xl overflow-hidden border border-slate-700/50 shadow-inner bg-slate-950 flex justify-center items-center">
+                    <canvas id="story-canvas" width="700" height="350" class="w-full h-auto max-w-full block"></canvas>
+                </div>
+
+                <!-- Story Brief Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/40">
+                        <div class="text-xs text-festive-gold font-bold mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-flag"></i> 起因 / 背景
+                        </div>
+                        <p id="modal-cause" class="text-sm text-slate-300 leading-relaxed">--</p>
+                    </div>
+                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/40">
+                        <div class="text-xs text-red-400 font-bold mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-bolt"></i> 離奇轉折
+                        </div>
+                        <p id="modal-twist" class="text-sm text-slate-300 leading-relaxed">--</p>
+                    </div>
+                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/40">
+                        <div class="text-xs text-emerald-400 font-bold mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-trophy"></i> 現狀 / 結局
+                        </div>
+                        <p id="modal-outcome" class="text-sm text-slate-300 leading-relaxed">--</p>
+                    </div>
+                </div>
+
+                <!-- Story Full Text -->
+                <div class="bg-slate-800/30 p-5 rounded-xl border border-slate-700/30 space-y-3">
+                    <h3 class="text-base font-bold text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-festive-gold"></i> 故事全貌大公開
+                    </h3>
+                    <p id="modal-description" class="text-slate-300 text-sm md:text-base leading-relaxed whitespace-pre-line">
+                        <!-- Full Description -->
+                    </p>
+                </div>
+
+                <!-- Golden Takeaway Quote -->
+                <div class="p-4 rounded-xl bg-gradient-to-r from-amber-950/40 via-yellow-900/20 to-amber-950/40 border border-festive-gold/40 text-center">
+                    <div class="text-xs text-festive-gold font-bold tracking-widest uppercase mb-1">
+                        💡 十年領悟的血淚金句
+                    </div>
+                    <div id="modal-quote" class="text-base md:text-lg font-heading font-semibold text-amber-200 italic">
+                        "——"
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-slate-900 p-4 border-t border-slate-800 flex justify-between items-center">
+                <span class="text-xs text-slate-500">提示：點擊右下角按鈕可切換其他故事</span>
+                <button onclick="closeModal()" class="px-6 py-2.5 bg-gradient-to-r from-festive-gold to-amber-500 hover:from-yellow-400 hover:to-amber-600 text-slate-950 font-bold text-sm rounded-xl transition-all shadow-lg shadow-amber-500/20 flex items-center gap-2">
+                    <i class="fa-solid fa-rotate-left"></i> 返回選單
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Data and Logic -->
+    <script>
+        // Story Data Collection
+        const stories = [
+            {
+                id: 'crazy-lover',
+                title: '瘋子情人',
+                tag: '警世 / 愛情',
+                tagColor: 'bg-red-500/20 text-red-300 border-red-500/30',
+                year: '2',
+                icon: 'fa-heart-crack',
+                summary: '剛畢業遇到的恐怖交往對象，種種瘋狂舉動與擺脫經歷。',
+                cause: '社會新鮮人渴望愛情，在朋友聚會認識了一位看似溫柔體貼的理想對象。',
+                twist: '交往第二個月開始展現「定位大師」天賦，連去買巷口便當都要視訊確認，甚至偷藏我房間備用鑰匙！',
+                outcome: '經歷一場大場面攤牌，靠著室友掩護與連夜搬家才終於順利割捨這段虐緣。',
+                description: `畢業後第一份工作剛穩定，以為遇到了命定天菜。沒想到這只是連續劇般的噩夢開始。
+                
+對方開始要求 24 小時共享手機定位，如果不即時回訊息，半小時內就會出現在我公司樓下喊名字！最扯的一次是，我只是加班沒接到電話，對方竟然直接報警說我「失蹤被綁架」。
+最後在全家與好友的強烈協助下，花了一整個月換電話、搬家、甚至換工作才徹底劃清界線。`,
+                quote: '「單身頂多孤單，選錯伴侶每天都是驚悚片現場。」',
+                canvasBg: ['#450a0a', '#18181b'],
+                canvasGraphic: 'heartBreak'
+            },
+            {
+                id: 'workplace-tears',
+                title: '淚灑職場',
+                tag: '職場血淚',
+                tagColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+                year: '1',
+                icon: 'fa-cloud-showers-heavy',
+                summary: '菜鳥時期被主管狠刮、在大雨中邊騎車邊大哭但隔天繼續上班的熱血酸甜史。',
+                cause: '剛入職接手百萬級別專案，因為簡報數據小數點算錯，被嚴厲主管當眾痛罵。',
+                twist: '下班時偏偏遇到颱風級豪雨，騎著機車安全帽內全濕，分不清是雨水還是眼淚。',
+                outcome: '隔天擦乾眼淚重做報告，三年後直接升任該部門小主管，把當年的經驗變成底氣。',
+                description: `畢業第一年，熱血滿腔卻經驗不足。那次簡報出大包，在 15 個跨部門主管面前被直屬長官洗臉洗到懷疑人生。
+                
+那天傍晚剛好下起傾盆大雨，我騎著 125cc 機車停在紅燈前，眼淚完全忍不住崩潰大哭。旁邊的騎士還問我：「弟仔，你還好嗎？」
+但哭完之後，去超商買了一罐啤酒與雞排，回去熬夜把數據通通更正。隔天準時 8:30 站在主管桌前交出完美版！`,
+                quote: '「雨水洗得掉委屈，洗不掉想證明自己的骨氣。」',
+                canvasBg: ['#1e3a8a', '#0f172a'],
+                canvasGraphic: 'rainBike'
+            },
+            {
+                id: 'not-arguing',
+                title: '我現在不是要跟你吵',
+                tag: '爆笑誤會',
+                tagColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+                year: '5',
+                icon: 'fa-comments',
+                summary: '會議室裡兩大主管正要大爆發，結果因為一句無厘頭的誤會瞬間化解的荒謬現場。',
+                cause: '行銷部與產品部因季度預算分配不公，在閉門會議室中火藥味濃烈。',
+                twist: '當 A 主管站起來大吼「我現在不是要跟你吵！」時，外送員突然推門進來喊：「誰的臭豆腐好了？」',
+                outcome: '全場瞬間死寂三秒後集體爆笑，兩位主管笑到無法接話，預算大戰意外和平落幕。',
+                description: `那是公司歷史上最緊張的一次季度會議。行銷總監跟營運副總兩個大老拍桌子對罵，空氣凝結到連呼吸都有壓力。
+                
+總監氣到面紅耳赤，猛力一拍桌子站起來指著對方：「我現在不是要跟你吵……！」
+結果話還沒說完，會議室門被無情推開，歡樂的外送員大聲喊：「請問哪一位訂的『超辣臭豆腐加倍辣』？會冷掉喔！」
+那個濃郁的臭豆腐味瞬間蔓延全場，大家愣了 3 秒後爆發出這辈子聽過最大的笑聲，連總監自己都笑到飆淚。`,
+                quote: '「沒有什麼跨部門恩怨是一份臭豆腐化解不了的，如果有，就兩份。」',
+                canvasBg: ['#78350f', '#18181b'],
+                canvasGraphic: 'stinkyTofu'
+            },
+            {
+                id: 'are-you-pregnant',
+                title: '你是不是懷孕',
+                tag: '社死現場',
+                tagColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+                year: '7',
+                icon: 'fa-person-breastfeeding',
+                summary: '因為吃太飽或服裝問題被長輩/同事誤會懷孕，全公司準備祝賀時的超尷尬時刻。',
+                cause: '連續兩週天天吃熱炒吃到飽，再加上當天穿了一件極度寬鬆的日系娃娃洋裝。',
+                twist: '資深人資阿姨偷偷塞給我一份「孕婦葉酸補給品」，還笑得無比慈祥。',
+                outcome: '不得不當眾澄清「我只是單純變胖 5 公斤」，全辦公室陷入極致沉默。',
+                description: `那陣子壓力大狂吃美食，不知不覺小腹圓潤不少。剛好那天穿了一件飄逸的連身娃娃裙。
+                
+下午茶時間，HR 阿姨非常溫柔地拍拍我的肩膀，把一張「孕婦特休申請須知」跟包好的葉酸補給品放在我桌上，還大聲說：「恭喜啊！幾個月啦？我們大家都會幫忙分擔工作的！」
+全辦公室 30 幾個人同時轉頭鼓掌……我只能用顫抖的聲音回答：「阿姨……我真的只是中午麻辣鍋吃太飽，加上這陣子胖了……」
+那個空氣凍結的瞬間，直接成為我職涯社死排行榜第一名。`,
+                quote: '「寬鬆洋裝千萬條，合身第一條；穿錯娃娃裙，全公司替你準備產假。」',
+                canvasBg: ['#581c87', '#0f172a'],
+                canvasGraphic: 'pregnantConfusion'
+            },
+            {
+                id: 'rushing-out',
+                title: '奪門而出',
+                tag: '離奇驚悚',
+                tagColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+                year: '4',
+                icon: 'fa-person-running',
+                summary: '出差或租屋時遇到超離奇靈異/荒謬意外事件，連行李都來不及拿就奪門而出的故事。',
+                cause: '至中南部出差，入住了一家年代久遠、充滿復古風格的平價老飯店。',
+                twist: '半夜三點浴室突然傳出流暢的吹風機聲，緊接著房間電視自動打開播放古典樂！',
+                outcome: '連鞋子都穿歪、行李都沒收，抱著筆電跟錢包直奔樓下大廳打卡退房。',
+                description: `那次去中南部出差，因為預算有限住了一間外觀滿滿古風的旅館。
+                
+半夜睡到一半，突然聽到浴室傳來陣陣風聲——吹風機竟然自己開最大檔運作！我全身發麻不敢動，結果下一秒，房間電視自己亮起來，用最大音量播放古典聲樂。
+我當下完全顧不上什麼形象與行李，抓起隨身包包與手機，直接「奪門而出」一路狂奔到一樓大廳。
+櫃檯大叔居然冷靜地看著我說：「蛤？你房號是 404 喔？那正常的啦……」`,
+                quote: '「遇到不對勁，跑就對了！尊嚴不重要，平安回家才是真的。」',
+                canvasBg: ['#064e3b', '#0f172a'],
+                canvasGraphic: 'midnightRun'
+            }
+        ];
+
+        // Render Story Cards
+        function renderCards() {
+            const grid = document.getElementById('story-grid');
+            grid.innerHTML = stories.map(story => `
+                <div onclick="openModal('${story.id}')" 
+                     class="glass-card rounded-2xl p-6 cursor-pointer transform transition-all duration-300 hover:-translate-y-2 relative group overflow-hidden flex flex-col justify-between">
+                    
+                    <!-- Top accent line -->
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-festive-gold to-red-500 opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                    
+                    <div>
+                        <!-- Tag & Year -->
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-bold ${story.tagColor} border">
+                                ${story.tag}
+                            </span>
+                            <span class="text-xs text-slate-400">
+                                畢業第 ${story.year} 年
+                            </span>
+                        </div>
+
+                        <!-- Card Icon & Title -->
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-festive-gold text-2xl group-hover:scale-110 group-hover:bg-festive-gold group-hover:text-slate-950 transition-all duration-300">
+                                <i class="fa-solid ${story.icon}"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold font-heading text-slate-100 group-hover:text-festive-gold transition-colors">
+                                ${story.title}
+                            </h3>
+                        </div>
+
+                        <!-- Summary -->
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            ${story.summary}
+                        </p>
+                    </div>
+
+                    <!-- Button Action -->
+                    <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-festive-gold font-bold">
+                        <span>解鎖看故事大綱</span>
+                        <i class="fa-solid fa-arrow-right transform group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Open Modal and Draw Canvas
+        function openModal(id) {
+            const story = stories.find(s => s.id === id);
+            if (!story) return;
+
+            // Fill text content
+            document.getElementById('modal-title').innerText = story.title;
+            document.getElementById('modal-tag').innerText = story.tag;
+            document.getElementById('modal-year').innerText = story.year;
+            document.getElementById('modal-cause').innerText = story.cause;
+            document.getElementById('modal-twist').innerText = story.twist;
+            document.getElementById('modal-outcome').innerText = story.outcome;
+            document.getElementById('modal-description').innerText = story.description;
+            document.getElementById('modal-quote').innerText = story.quote;
+
+            // Show modal
+            const modal = document.getElementById('story-modal');
+            const container = document.getElementById('modal-container');
+            modal.classList.remove('hidden');
+            
+            // Draw illustration on Canvas
+            drawStoryCanvas(story);
+        }
+
+        // Close Modal
+        function closeModal() {
+            const modal = document.getElementById('story-modal');
+            modal.classList.add('hidden');
+        }
+
+        // Draw Canvas Illustration
+        function drawStoryCanvas(story) {
+            const canvas = document.getElementById('story-canvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // Background Gradient
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, story.canvasBg[0]);
+            gradient.addColorStop(1, story.canvasBg[1]);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            // Decorative background patterns
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < width; i += 40) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, height);
+                ctx.stroke();
+            }
+
+            // Draw Graphic Icons / Visual Representation
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Central Banner Badge
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
+            ctx.beginPath();
+            ctx.roundRect(width / 2 - 220, height / 2 - 90, 440, 180, 16);
+            ctx.fill();
+            ctx.strokeStyle = '#FACE63';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Main Graphic Emoji/Symbol
+            let emoji = '🎭';
+            if (story.id === 'crazy-lover') emoji = '💔';
+            if (story.id === 'workplace-tears') emoji = '🌧️';
+            if (story.id === 'not-arguing') emoji = '臭';
+            if (story.id === 'are-you-pregnant') emoji = '🤰';
+            if (story.id === 'rushing-out') emoji = '👻';
+
+            if (emoji === '臭') {
+                ctx.fillStyle = '#FACE63';
+                ctx.font = 'bold 50px "Noto Sans TC"';
+                ctx.fillText('🍲 臭豆腐拯救現場', width / 2, height / 2 - 35);
+            } else {
+                ctx.font = '60px sans-serif';
+                ctx.fillText(emoji, width / 2, height / 2 - 40);
+            }
+
+            // Title inside Canvas
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 24px "Noto Sans TC"';
+            ctx.fillText(`【 ${story.title} 】`, width / 2, height / 2 + 20);
+
+            // Subtitle Quote inside Canvas
+            ctx.fillStyle = '#FACE63';
+            ctx.font = 'italic 14px "Noto Sans TC"';
+            ctx.fillText(story.quote, width / 2, height / 2 + 55);
+
+            ctx.restore();
+        }
+
+        // Close Modal on backdrop click
+        window.onclick = function(event) {
+            const modal = document.getElementById('story-modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Initialize App
+        window.onload = function() {
+            renderCards();
+        }
+    </script>
+</body>
+</html>
